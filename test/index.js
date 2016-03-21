@@ -1,13 +1,10 @@
-require('babel-register');
+import fs from 'fs';
+import path from 'path';
+import bmcHapi from '../src';
+import { inspect } from 'util';
+import chai, { assert, expect } from 'chai';
 
-const fs       = require('fs');
-const path     = require('path');
-const bmcHapi  = require('../lib');
-const chai     = require('chai'),
-      assert   = require('chai').assert,
-      expect   = require('chai').expect;
-
-const conf = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../conf.json'), 'utf-8'));
+const conf = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../conf.json'), 'utf-8'));
 
 describe('bmcHapi', () => {
 
@@ -32,28 +29,49 @@ describe('bmcHapi', () => {
     it('should define getBiosFwInfo method', () => {
       assert.isDefined(bmcHapi.getBiosFwInfo, ('Get BIOS FW Info method has been defined'));
     });
+
+    it('should define getSslCert method', () => {
+      assert.isDefined(bmcHapi.getSslCert, ('Get SSL Cert method has been defined'));
+    });
+
+    it('should define uploadSslCert method', () => {
+      assert.isDefined(bmcHapi.uploadSslCert, ('Upload SSL Cert method has been defined'));
+    });
+
+    it('should define uploadSslKey method', () => {
+      assert.isDefined(bmcHapi.uploadSslKey, ('Upload SSL Key method has been defined'));
+    });
+
+    it('should define validateSsl method', () => {
+      assert.isDefined(bmcHapi.validateSsl, ('Validate SSL method has been defined'));
+    });
+
+    it('should define restartHttps method', () => {
+      assert.isDefined(bmcHapi.restartHttps, ('Restart HTTPS method has been defined'));
+    });
   });
 
   describe('worked or not...', () => {
 
-    'use strict';
     let gCookie, gToken;
 
     beforeEach((done) => {
-      bmcHapi.login(conf.protocol, conf.ip, conf.account, conf.password, (err, cc, cookie, token) => {
+      bmcHapi.login(conf.protocol, conf.ip, conf.account, conf.password).then((args) => {
+        let {cc, cookie, token} = args;
         gCookie = cookie;
         gToken = token;
         done();
       });
     });
     afterEach((done) => {
-      bmcHapi.logout(conf.protocol, conf.ip, gCookie, gToken, (err, cc) => {
+      bmcHapi.logout(conf.protocol, conf.ip, gCookie, gToken).then((cc) => {
         done();
       });
     });
 
     it('get role', () => {
-      bmcHapi.getRole(conf.protocol, conf.ip, gCookie, gToken, (err, cc, userName, userPriv) => {
+      return bmcHapi.getRole(conf.protocol, conf.ip, gCookie, gToken).then((args) => {
+        let {cc, userName, userPriv} = args;
         expect(cc).to.equal(0);
         expect(userName).to.not.be.null;
         expect(userName).to.not.be.undefined;
@@ -64,7 +82,8 @@ describe('bmcHapi', () => {
     });
 
     it('get bmc firmware information', () => {
-      bmcHapi.getBmcFwInfo(conf.protocol, conf.ip, gCookie, gToken, (err, cc, version, buildTime) => {
+      return bmcHapi.getBmcFwInfo(conf.protocol, conf.ip, gCookie, gToken).then((args) => {
+        let {cc, version, buildTime} = args;
         expect(cc).to.equal(0);
         expect(version).to.not.be.null;
         expect(version).to.not.be.undefined;
@@ -74,10 +93,27 @@ describe('bmcHapi', () => {
     });
 
     it('get bios firmware information', () => {
-      bmcHapi.getBiosFwInfo(conf.protocol, conf.ip, gCookie, gToken, (err, cc, version) => {
+      return bmcHapi.getBiosFwInfo(conf.protocol, conf.ip, gCookie, gToken).then((args) => {
+        let {cc, version} = args;
         expect(cc).to.equal(0);
         expect(version).to.not.be.null;
         expect(version).to.not.be.undefined;
+      });
+    });
+
+    it('get SSL Cert information', () => {
+      return bmcHapi.getSslCert(conf.protocol, conf.ip, gCookie, gToken).then((args) => {
+        let {cc, certInfo} = args;
+        expect(cc).to.equal(0);
+        expect(certInfo).to.not.be.null;
+        expect(certInfo).to.not.be.undefined;
+        expect(certInfo).to.have.ownProperty('FromCommonName');
+        expect(certInfo).to.have.ownProperty('FromOrganization');
+        expect(certInfo).to.have.ownProperty('FromOrgUnit');
+        expect(certInfo).to.have.ownProperty('FromCity');
+        expect(certInfo).to.have.ownProperty('FromState');
+        expect(certInfo).to.have.ownProperty('FromCountry');
+        expect(certInfo).to.have.ownProperty('FromEmailID');
       });
     });
 

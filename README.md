@@ -1,5 +1,11 @@
 # node-bmc-hapi
 
+
+> Repack HAPIs and make them more restful
+
+Use these APIs before Redfish comes out
+
+
 ## Install
 
 Install dependencies.
