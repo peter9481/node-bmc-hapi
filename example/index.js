@@ -7,6 +7,12 @@ import bmcHapi from '../src';
 const protocol = 'https';
 const conf = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../conf.json'), 'utf-8'));
 
+// Detect device
+bmcHapi.detectDev(conf.protocol, conf.ip, 'ThinkServer Management Module').then((args) => {
+  let {cc, isDev} = args
+  console.log('Detect Device: ' + cc + ', ' + isDev);
+});
+
 // Get some data => Use pure Promise
 bmcHapi.login(conf.protocol, conf.ip, conf.account, conf.password).then((args) => {
 

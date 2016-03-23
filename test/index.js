@@ -10,6 +10,10 @@ describe('bmcHapi', () => {
 
   describe('defined or not...', () => {
 
+    it('should define detectDev method', () => {
+      assert.isDefined(bmcHapi.detectDev, ('Detect Device method has been defined'));
+    });
+
     it('should define login method', () => {
       assert.isDefined(bmcHapi.login, ('Login method has been defined'));
     });
@@ -101,7 +105,7 @@ describe('bmcHapi', () => {
       });
     });
 
-    it('get SSL Cert information', () => {
+    it('get ssl cert information', () => {
       return bmcHapi.getSslCert(conf.protocol, conf.ip, gCookie, gToken).then((args) => {
         let {cc, certInfo} = args;
         expect(cc).to.equal(0);

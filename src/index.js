@@ -3,15 +3,47 @@ import { inspect } from 'util';
 import vm from 'vm';
 import fs from 'fs';
 import path from 'path';
+import cheerio from 'cheerio';
 
 module.exports = {
+  detectDev,
   login, logout, getRole, getBmcFwInfo, getBiosFwInfo, getSslCert,
   uploadSslCert, uploadSslKey, validateSsl, restartHttps,
 };
 
+function detectDev(protocol, ip, keyString) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/index.html';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      gzip: true,
+      port: 443
+    };
+
+    request(options, (err, res, body) => {
+
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      let $ = cheerio.load(body);
+      let isDev = ($('title').text() == keyString) ? true : false;
+      resolve({
+        cc: res.statusCode,
+        isDev
+      });
+    });
+  });
+}
+
 function login(protocol, ip, account, password) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/WEBSES/create.asp";
+    const url     = protocol + '://' + ip + '/rpc/WEBSES/create.asp';
     const body    = 'WEBVAR_USERNAME=' + account + "&WEBVAR_PASSWORD=" + password;
     const options = {
       url,
@@ -44,7 +76,7 @@ function login(protocol, ip, account, password) {
 
 function logout(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/WEBSES/logout.asp";
+    const url     = protocol + '://' + ip + '/rpc/WEBSES/logout.asp';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -73,7 +105,7 @@ function logout(protocol, ip, cookie, token) {
 
 function getRole(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/getrole.asp";
+    const url     = protocol + '://' + ip + '/rpc/getrole.asp';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -109,7 +141,7 @@ function getRole(protocol, ip, cookie, token) {
 
 function getBmcFwInfo(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/getfwinfo.asp";
+    const url     = protocol + '://' + ip + '/rpc/getfwinfo.asp';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -151,7 +183,7 @@ function getBmcFwInfo(protocol, ip, cookie, token) {
 
 function getBiosFwInfo(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/getbiosver.asp";
+    const url     = protocol + '://' + ip + '/rpc/getbiosver.asp';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -185,7 +217,7 @@ function getBiosFwInfo(protocol, ip, cookie, token) {
 
 function getSslCert(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/viewssl.asp";
+    const url     = protocol + '://' + ip + '/rpc/viewssl.asp';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -217,7 +249,7 @@ function getSslCert(protocol, ip, cookie, token) {
 
 function uploadSslCert(protocol, ip, cookie, token, newCert) {
   return new Promise((resolve, reject) => {
-    const url = protocol + '://' + ip + "/page/file_upload.html?SOURCE=SSL_CertFile";
+    const url = protocol + '://' + ip + '/page/file_upload.html?SOURCE=SSL_CertFile';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -248,7 +280,7 @@ function uploadSslCert(protocol, ip, cookie, token, newCert) {
 
 function uploadSslKey(protocol, ip, cookie, token, newKey) {
   return new Promise((resolve, reject) => {
-    const url  = protocol + '://' + ip + "/page/file_upload.html?SOURCE=SSL_PrivKey";
+    const url  = protocol + '://' + ip + '/page/file_upload.html?SOURCE=SSL_PrivKey';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -279,7 +311,7 @@ function uploadSslKey(protocol, ip, cookie, token, newKey) {
 
 function validateSsl(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/validatesslcert.asp";
+    const url     = protocol + '://' + ip + '/rpc/validatesslcert.asp';
     const options = {
       url,
       rejectUnauthorized: false,
@@ -307,7 +339,7 @@ function validateSsl(protocol, ip, cookie, token) {
 
 function restartHttps(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
-    const url     = protocol + '://' + ip + "/rpc/restarthttps.asp";
+    const url     = protocol + '://' + ip + '/rpc/restarthttps.asp';
     const options = {
       url,
       rejectUnauthorized: false,
