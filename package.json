@@ -2,14 +2,15 @@
   "name": "node-bmc-hapi",
   "version": "0.1.0",
   "description": "The HAPIs of BMC",
-  "main": "lib/index.js",
+  "main": "distribution/index.js",
   "scripts": {
     "buildSrc": "node_modules/babel-cli/bin/babel.js src --out-dir lib/src",
     "buildExample": "node_modules/babel-cli/bin/babel.js example --out-dir lib/example",
     "buildTest": "node_modules/babel-cli/bin/babel.js test --out-dir lib/test",
-    "prepublish": "npm run buildSrc",
+    "build": "node_modules/babel-cli/bin/babel.js src --out-dir distribution/",
+    "prepublish": "npm run build",
     "start": "npm run buildSrc && npm run buildExample && node lib/example/index.js",
-    "test": "npm run buildSrc && npm run buildTest && node_modules/mocha/bin/mocha lib/test/index.js"
+    "test": "npm run buildSrc && npm run buildTest && node_modules/mocha/bin/mocha --timeout 15000 lib/test/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,9 @@
   },
   "author": "Nimo Hsieh",
   "license": "MIT",
+  "engines": {
+    "node": ">=5.7.0"
+  },
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-plugin-syntax-async-functions": "^6.5.0",
