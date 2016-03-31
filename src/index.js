@@ -9,6 +9,10 @@ module.exports = {
   detectDev,
   login, logout, getRole, getBmcFwInfo, getBiosFwInfo, getSslCert,
   uploadSslCert, uploadSslKey, validateSsl, restartHttps,
+  uploadFw, flashStatus, restartWebServer,
+  prepBiosFlash, verifyBiosFw, startBiosFlash, cancelBiosFlash, verifyBiosErr,
+  prepBmcFlash, verifyBmcFw, startBmcFlash,
+  prepPsocFlash, verifyPsocFw, startPsocFlash, cancelPsocFlash, psocFlashStatus,
 };
 
 function detectDev(protocol, ip, keyString) {
@@ -340,6 +344,474 @@ function validateSsl(protocol, ip, cookie, token) {
 function restartHttps(protocol, ip, cookie, token) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/restarthttps.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(res.statusCode);
+    });
+  });
+}
+
+function prepBiosFlash(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/prepbiosflash.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function uploadFw(protocol, ip, cookie, token, newfw) {
+  return new Promise((resolve, reject) => {
+    const url  = protocol + '://' + ip + '/page/file_upload.html?SOURCE=FirmwareImage';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'POST',
+      port: 443,
+      formData: {
+        '/mnt/rom.ima': fs.createReadStream(newfw),
+      },
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(res.statusCode);
+    });
+  });
+}
+
+function verifyBiosFw(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/verifybiosimage.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function startBiosFlash(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/startbiosflash.asp';
+    const body    = 'SECTIONCOUNT=0&FLASHSTATUS=1';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'POST',
+      port: 443,
+      body,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function flashStatus(protocol, ip, cookie, token ) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/flashstatus.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.WEBVAR_STRUCTNAME_FLASHPROGRESS[0].FLASHPROGRESS);
+    });
+  });
+}
+
+function cancelBiosFlash(protocol, ip, cookie, token ) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/cancelflash.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(res.statusCode);
+    });
+  });
+}
+
+function verifyBiosErr(protocol, ip, cookie, token ) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/verifyerr.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(res.statusCode);
+    });
+  });
+}
+
+function prepBmcFlash(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/prepflash.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function verifyBmcFw(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/verifyimage.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function startBmcFlash(protocol, ip, cookie, token, sectioncount, flashstatus) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/startflash.asp';
+    const body    = 'PRESERVECFG=' + sectioncount + "&FLASHSTATUS=" + flashstatus;
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'POST',
+      port: 443,
+      body,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function prepPsocFlash(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/preppsocflash.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function verifyPsocFw(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/verifypsocimage.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function startPsocFlash(protocol, ip, cookie, token, device) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/startpsocflash.asp';
+    const body    = 'DEVICE=' + device;
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'POST',
+      port: 443,
+      body,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function cancelPsocFlash(protocol, ip, cookie, token ) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/cancelpsocflash.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(res.statusCode);
+    });
+  });
+}
+
+function psocFlashStatus(protocol, ip, cookie, token ) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/getpsocflashstatus.asp';
+    const options = {
+      url,
+      rejectUnauthorized: false,
+      requestCert: true,
+      agent: false,
+      method: 'GET',
+      port: 443,
+      headers: {
+        CSRFTOKEN: token,
+        Cookie: cookie
+      }
+    };
+
+    request(options, (err, res, body) => {
+
+      body = vm.runInThisContext(body);
+      if (err || res.statusCode != 200) {
+        reject(err);
+        return;
+      }
+
+      resolve(body.HAPI_STATUS);
+    });
+  });
+}
+
+function restartWebServer(protocol, ip, cookie, token) {
+  return new Promise((resolve, reject) => {
+    const url     = protocol + '://' + ip + '/rpc/restartwebserver.asp';
     const options = {
       url,
       rejectUnauthorized: false,
