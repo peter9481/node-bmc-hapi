@@ -53,6 +53,70 @@ describe('bmcHapi', () => {
     it('should define restartHttps method', () => {
       assert.isDefined(bmcHapi.restartHttps, ('Restart HTTPS method has been defined'));
     });
+
+    it('should define uploadFw method', () => {
+      assert.isDefined(bmcHapi.uploadFw, ('Upload Fw method has been defined'));
+    });
+
+    it('should define flashStatus method', () => {
+      assert.isDefined(bmcHapi.flashStatus, ('Flash Status method has been defined'));
+    });
+
+    it('should define restartWebServer method', () => {
+      assert.isDefined(bmcHapi.restartWebServer, ('Restart Web Server method has been defined'));
+    });
+
+    it('should define prepBiosFlash method', () => {
+      assert.isDefined(bmcHapi.prepBiosFlash, ('Prepare BIOS Flash method has been defined'));
+    });
+
+    it('should define verifyBiosFw method', () => {
+      assert.isDefined(bmcHapi.verifyBiosFw, ('Verify BIOS Fw method has been defined'));
+    });
+
+    it('should define startBiosFlash method', () => {
+      assert.isDefined(bmcHapi.startBiosFlash, ('Start BIOS Flash method has been defined'));
+    });
+
+    it('should define cancelBiosFlash method', () => {
+      assert.isDefined(bmcHapi.cancelBiosFlash, ('Cancel BIOS Flash method has been defined'));
+    });
+
+    it('should define verifyBiosErr method', () => {
+      assert.isDefined(bmcHapi.verifyBiosErr, ('Verify BIOS Err method has been defined'));
+    });
+
+    it('should define prepBmcFlash method', () => {
+      assert.isDefined(bmcHapi.prepBmcFlash, ('Prepare BMC Flash method has been defined'));
+    });
+
+    it('should define verifyBmcFw method', () => {
+      assert.isDefined(bmcHapi.verifyBmcFw, ('Verify BMC Fw method has been defined'));
+    });
+
+    it('should define startBmcFlash method', () => {
+      assert.isDefined(bmcHapi.startBmcFlash, ('Start BMC Flash method has been defined'));
+    });
+
+    it('should define prepPsocFlash method', () => {
+      assert.isDefined(bmcHapi.prepPsocFlash, ('Prepare PSOC Flash method has been defined'));
+    });
+
+    it('should define verifyPsocFw method', () => {
+      assert.isDefined(bmcHapi.verifyPsocFw, ('Verify PSOC Fw method has been defined'));
+    });
+
+    it('should define startPsocFlash method', () => {
+      assert.isDefined(bmcHapi.startPsocFlash, ('Start PSOC Flash method has been defined'));
+    });
+
+    it('should define cancelPsocFlash method', () => {
+      assert.isDefined(bmcHapi.cancelPsocFlash, ('Cancel PSOC Flash method has been defined'));
+    });
+
+    it('should define psocFlashStatus method', () => {
+      assert.isDefined(bmcHapi.psocFlashStatus, ('PSOC Flash Status method has been defined'));
+    });
   });
 
   describe('worked or not...', () => {
@@ -121,5 +185,13 @@ describe('bmcHapi', () => {
       });
     });
 
+    it('get bios firmware information', () => {
+      return bmcHapi.getBiosFwInfo(conf.protocol, conf.ip, gCookie, gToken).then((args) => {
+        let {cc, version} = args;
+        expect(cc).to.equal(0);
+        expect(version).to.not.be.null;
+        expect(version).to.not.be.undefined;
+      });
+    });
   });
 });
