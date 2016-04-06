@@ -1,6 +1,6 @@
 {
   "name": "node-bmc-hapi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The HAPIs of BMC",
   "main": "distribution/index.js",
   "scripts": {

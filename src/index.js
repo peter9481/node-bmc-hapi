@@ -15,11 +15,12 @@ module.exports = {
   prepPsocFlash, verifyPsocFw, startPsocFlash, cancelPsocFlash, psocFlashStatus,
 };
 
-function detectDev(protocol, ip, keyString) {
+function detectDev(protocol, ip, keyString, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/index.html';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -45,12 +46,13 @@ function detectDev(protocol, ip, keyString) {
   });
 }
 
-function login(protocol, ip, account, password) {
+function login(protocol, ip, account, password, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/WEBSES/create.asp';
     const body    = 'WEBVAR_USERNAME=' + account + "&WEBVAR_PASSWORD=" + password;
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -78,11 +80,12 @@ function login(protocol, ip, account, password) {
   });
 }
 
-function logout(protocol, ip, cookie, token) {
+function logout(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/WEBSES/logout.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -107,11 +110,12 @@ function logout(protocol, ip, cookie, token) {
   });
 }
 
-function getRole(protocol, ip, cookie, token) {
+function getRole(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/getrole.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -143,11 +147,12 @@ function getRole(protocol, ip, cookie, token) {
   });
 }
 
-function getBmcFwInfo(protocol, ip, cookie, token) {
+function getBmcFwInfo(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/getfwinfo.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -185,11 +190,12 @@ function getBmcFwInfo(protocol, ip, cookie, token) {
   });
 }
 
-function getBiosFwInfo(protocol, ip, cookie, token) {
+function getBiosFwInfo(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/getbiosver.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -219,11 +225,12 @@ function getBiosFwInfo(protocol, ip, cookie, token) {
   });
 }
 
-function getSslCert(protocol, ip, cookie, token) {
+function getSslCert(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/viewssl.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -251,11 +258,12 @@ function getSslCert(protocol, ip, cookie, token) {
   });
 }
 
-function uploadSslCert(protocol, ip, cookie, token, newCert) {
+function uploadSslCert(protocol, ip, cookie, token, newCert, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url = protocol + '://' + ip + '/page/file_upload.html?SOURCE=SSL_CertFile';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -282,11 +290,12 @@ function uploadSslCert(protocol, ip, cookie, token, newCert) {
   });
 }
 
-function uploadSslKey(protocol, ip, cookie, token, newKey) {
+function uploadSslKey(protocol, ip, cookie, token, newKey, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url  = protocol + '://' + ip + '/page/file_upload.html?SOURCE=SSL_PrivKey';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -313,11 +322,12 @@ function uploadSslKey(protocol, ip, cookie, token, newKey) {
   });
 }
 
-function validateSsl(protocol, ip, cookie, token) {
+function validateSsl(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/validatesslcert.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -341,11 +351,12 @@ function validateSsl(protocol, ip, cookie, token) {
   });
 }
 
-function restartHttps(protocol, ip, cookie, token) {
+function restartHttps(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/restarthttps.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -369,11 +380,12 @@ function restartHttps(protocol, ip, cookie, token) {
   });
 }
 
-function prepBiosFlash(protocol, ip, cookie, token) {
+function prepBiosFlash(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/prepbiosflash.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -398,11 +410,12 @@ function prepBiosFlash(protocol, ip, cookie, token) {
   });
 }
 
-function uploadFw(protocol, ip, cookie, token, newfw) {
+function uploadFw(protocol, ip, cookie, token, newfw, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url  = protocol + '://' + ip + '/page/file_upload.html?SOURCE=FirmwareImage';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -429,11 +442,12 @@ function uploadFw(protocol, ip, cookie, token, newfw) {
   });
 }
 
-function verifyBiosFw(protocol, ip, cookie, token) {
+function verifyBiosFw(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/verifybiosimage.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -458,12 +472,13 @@ function verifyBiosFw(protocol, ip, cookie, token) {
   });
 }
 
-function startBiosFlash(protocol, ip, cookie, token) {
+function startBiosFlash(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/startbiosflash.asp';
     const body    = 'SECTIONCOUNT=0&FLASHSTATUS=1';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -489,11 +504,12 @@ function startBiosFlash(protocol, ip, cookie, token) {
   });
 }
 
-function flashStatus(protocol, ip, cookie, token ) {
+function flashStatus(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/flashstatus.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -518,11 +534,12 @@ function flashStatus(protocol, ip, cookie, token ) {
   });
 }
 
-function cancelBiosFlash(protocol, ip, cookie, token ) {
+function cancelBiosFlash(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/cancelflash.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -546,11 +563,12 @@ function cancelBiosFlash(protocol, ip, cookie, token ) {
   });
 }
 
-function verifyBiosErr(protocol, ip, cookie, token ) {
+function verifyBiosErr(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/verifyerr.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -574,11 +592,12 @@ function verifyBiosErr(protocol, ip, cookie, token ) {
   });
 }
 
-function prepBmcFlash(protocol, ip, cookie, token) {
+function prepBmcFlash(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/prepflash.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -603,11 +622,12 @@ function prepBmcFlash(protocol, ip, cookie, token) {
   });
 }
 
-function verifyBmcFw(protocol, ip, cookie, token) {
+function verifyBmcFw(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/verifyimage.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -632,12 +652,13 @@ function verifyBmcFw(protocol, ip, cookie, token) {
   });
 }
 
-function startBmcFlash(protocol, ip, cookie, token, sectioncount, flashstatus) {
+function startBmcFlash(protocol, ip, cookie, token, sectioncount, flashstatus, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/startflash.asp';
     const body    = 'PRESERVECFG=' + sectioncount + "&FLASHSTATUS=" + flashstatus;
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -663,11 +684,12 @@ function startBmcFlash(protocol, ip, cookie, token, sectioncount, flashstatus) {
   });
 }
 
-function prepPsocFlash(protocol, ip, cookie, token) {
+function prepPsocFlash(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/preppsocflash.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -692,11 +714,12 @@ function prepPsocFlash(protocol, ip, cookie, token) {
   });
 }
 
-function verifyPsocFw(protocol, ip, cookie, token) {
+function verifyPsocFw(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/verifypsocimage.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -721,12 +744,13 @@ function verifyPsocFw(protocol, ip, cookie, token) {
   });
 }
 
-function startPsocFlash(protocol, ip, cookie, token, device) {
+function startPsocFlash(protocol, ip, cookie, token, device, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/startpsocflash.asp';
     const body    = 'DEVICE=' + device;
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -752,11 +776,12 @@ function startPsocFlash(protocol, ip, cookie, token, device) {
   });
 }
 
-function cancelPsocFlash(protocol, ip, cookie, token ) {
+function cancelPsocFlash(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/cancelpsocflash.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -780,11 +805,12 @@ function cancelPsocFlash(protocol, ip, cookie, token ) {
   });
 }
 
-function psocFlashStatus(protocol, ip, cookie, token ) {
+function psocFlashStatus(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/getpsocflashstatus.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
@@ -809,11 +835,12 @@ function psocFlashStatus(protocol, ip, cookie, token ) {
   });
 }
 
-function restartWebServer(protocol, ip, cookie, token) {
+function restartWebServer(protocol, ip, cookie, token, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const url     = protocol + '://' + ip + '/rpc/restartwebserver.asp';
     const options = {
       url,
+      timeout,
       rejectUnauthorized: false,
       requestCert: true,
       agent: false,
